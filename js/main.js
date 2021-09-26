@@ -19,5 +19,7 @@ function randomNumber(min, max) {
   if (min > max) {
     [min, max] = [max, min];
   }
-  return Math.random() * (max - min + 1) + min;
+  let number = Math.random() * (max - min + 1) + min;
+  let fixedNumber = Number(number.toFixed(1));
+  return (fixedNumber);
 }
