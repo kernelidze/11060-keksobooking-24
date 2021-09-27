@@ -1,7 +1,5 @@
-// Функция, возвращающая случайное целое число из переданного диапазона включительно
-
-function randomIntegerNumber(min, max) {
-  if (min < 0 || max <0 ) {
+function getRandomIntegerNumber(min, max) {
+  if (min < 0 || max <= 0 ) {
     return;
   }
   if (min > max) {
@@ -10,16 +8,18 @@ function randomIntegerNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Функция, возвращающая случайное число с плавающей точкой из переданного диапазона включительно
+getRandomIntegerNumber (10, 100);
 
-function randomNumber(min, max) {
+function getRandomNumber(min, max, numberOfSigns) {
   if (min < 0 || max <0 ) {
     return;
   }
   if (min > max) {
     [min, max] = [max, min];
   }
-  let number = Math.random() * (max - min + 1) + min;
-  let fixedNumber = Number(number.toFixed(1));
-  return (fixedNumber);
+  const NUMBER = Math.random() * (max - min + 1) + min;
+  const FIXED_NUMBER = Number(NUMBER.toFixed(numberOfSigns));
+  return (FIXED_NUMBER);
 }
+
+getRandomNumber(10, 100, 3);
