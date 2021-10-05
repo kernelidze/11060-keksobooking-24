@@ -40,7 +40,7 @@ const getRandomFeatures = function () {
 
 const getRandomPhotos = function () {
   const photos = ['https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg', 'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg', 'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg'];
-  const photosRandomIndex = features[Math.floor(Math.random() * features.length)];
+  const photosRandomIndex = photos[Math.floor(Math.random() * photos.length)];
   return photos(photosRandomIndex);
 };
 
