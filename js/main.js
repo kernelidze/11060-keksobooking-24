@@ -31,6 +31,13 @@ function getRandomArrayElement(array) {
   return randomArrayElement;
 }
 
+function getRandomRangeFromArray(array) {
+  const newArrayLength = getRandomIntegerNumber(1, array.length);
+  const newShuffleArray = array.sort(() => Math.random() - 0.5);
+  const newArray = newShuffleArray.slice(0, newArrayLength);
+  return newArray;
+}
+
 const getAdsDescription = function () {
   const author = {
     avatar: `img/avatars/user${(getRandomArrayElement(avatarNumbers))}.png`,
@@ -48,15 +55,20 @@ const getAdsDescription = function () {
     guests: getRandomIntegerNumber(1, 100),
     checkin: getRandomArrayElement(checkin),
     checkout: getRandomArrayElement(checkin),
-    features: getRandomArrayElement(features),
+    features: getRandomRangeFromArray(features),
     description: 'Описание дома',
-    photos: getRandomArrayElement(photos),
+    photos: getRandomRangeFromArray(photos),
   };
-  const objectAssign = Object.assign({}, author, location, offer);
-  const adsDescriptionArray = Object.values(objectAssign);
-  //console.log(adsDescriptionArray);
-  return adsDescriptionArray;
+  const objectAd = {author, location, offer};
+  return objectAd;
 };
 
-getAdsDescription();
-console.log(getAdsDescription());
+const getUsersAdsArray = function () {
+  const userAdsArray = [];
+  for (let i = 0; i < 10; i++) {
+    userAdsArray[i] = getAdsDescription();
+  }
+  return userAdsArray;
+};
+
+getUsersAdsArray();
