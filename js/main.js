@@ -34,8 +34,7 @@ function getRandomArrayElement(array) {
 function getRandomRangeFromArray(array) {
   const newArrayLength = getRandomIntegerNumber(1, array.length);
   const newShuffleArray = array.sort(() => Math.random() - 0.5);
-  const newArray = newShuffleArray.slice(0, newArrayLength);
-  return newArray;
+  return newShuffleArray.slice(0, newArrayLength);
 }
 
 const getAdsDescription = function () {
@@ -59,8 +58,7 @@ const getAdsDescription = function () {
     description: 'Описание дома',
     photos: getRandomRangeFromArray(photos),
   };
-  const objectAd = {author, location, offer};
-  return objectAd;
+  return {author, location, offer};
 };
 
 const getUsersAdsArray = function () {
