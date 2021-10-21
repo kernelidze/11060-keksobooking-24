@@ -7,14 +7,15 @@ const mapCanvas = document.querySelector('#map-canvas');
 const fragment = document.createDocumentFragment();
 
 const generateFragment = (element, item, currenFragment) => {
+  const arrayFeatures = item.offer.features;
+  const featuresContainer = element.querySelector('.popup__features');
+  const hollowPhoto = element.querySelector('.popup__photos');
   element.querySelector('.popup__title').textContent = item.offer.title;
   element.querySelector('.popup__text--address').textContent = item.offer.address;
   element.querySelector('.popup__text--price').textContent =`${item.offer.price} ₽/ночь`;
   element.querySelector('.popup__type').textContent = TYPE_NAME[item.offer.type];
   element.querySelector('.popup__text--capacity').textContent = `${item.offer.rooms} комнаты для ${item.offer.guests} гостей`;
   element.querySelector('.popup__text--time').textContent = `Заезд после ${item.offer.checkin}, выезд до ${item.offer.checkout}`;
-  const arrayFeatures = item.offer.features;
-  const featuresContainer = element.querySelector('.popup__features');
   featuresContainer.innerHTML = '';
   arrayFeatures.forEach((feature) => {
     const featuresListItem = document.createElement('li');
@@ -23,7 +24,6 @@ const generateFragment = (element, item, currenFragment) => {
     element.querySelector('.popup__features').appendChild(featuresListItem);
   });
   element.querySelector('.popup__description').textContent = item.offer.description;
-  const hollowPhoto = element.querySelector('.popup__photos');
   hollowPhoto.innerHTML = '';
   item.offer.photos.forEach((photo) => {
     const photoElement = document.createElement('img');

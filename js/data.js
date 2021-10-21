@@ -39,7 +39,5 @@ const getUsersAdsArray = function () {
   return userAdsArray;
 };
 
-getUsersAdsArray();
-
 export {getUsersAdsArray};
 
