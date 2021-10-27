@@ -4,6 +4,8 @@ const FORM_PRICE_INPUT = FORM.querySelector('input[name=price]');
 const HOUSE_TYPES = FORM.querySelector('#type');
 const ROOM_NUMBER = FORM.querySelector('select[name=rooms]');
 const ROOM_CAPACITY = FORM.querySelector('select[name=capacity]');
+const TIMEIN = FORM.querySelector('select[name=timein]');
+const TIMEOUT = FORM.querySelector('select[name=timeout]');
 const MIN_RENT_PRICE = {
   bungalow: 0,
   flat: 1000,
@@ -53,23 +55,48 @@ FORM_TITLE_INPUT.addEventListener('input', () => {
 ROOM_NUMBER.addEventListener('click', () => {
   for (let i = 0; i < ROOM_CAPACITY.children.length; i++) {
     ROOM_CAPACITY.children[i].removeAttribute('disabled', '');
+    ROOM_CAPACITY.children[i].removeAttribute('selected', '');
   }
   if (ROOM_NUMBER.value === '1') {
     ROOM_CAPACITY.children[0].setAttribute('disabled', '');
     ROOM_CAPACITY.children[1].setAttribute('disabled', '');
+    ROOM_CAPACITY.children[2].setAttribute('selected', '');
     ROOM_CAPACITY.children[3].setAttribute('disabled', '');
   }
   if (ROOM_NUMBER.value === '2') {
     ROOM_CAPACITY.children[0].setAttribute('disabled', '');
+    ROOM_CAPACITY.children[1].setAttribute('selected', '');
     ROOM_CAPACITY.children[3].setAttribute('disabled', '');
   }
   if (ROOM_NUMBER.value === '3') {
+    ROOM_CAPACITY.children[0].setAttribute('selected', '');
     ROOM_CAPACITY.children[3].setAttribute('disabled', '');
   }
   if (ROOM_NUMBER.value === '100') {
     ROOM_CAPACITY.children[0].setAttribute('disabled', '');
     ROOM_CAPACITY.children[1].setAttribute('disabled', '');
     ROOM_CAPACITY.children[2].setAttribute('disabled', '');
+    ROOM_CAPACITY.children[3].setAttribute('selected', '');
   }
 });
 
+TIMEIN.addEventListener('click', () => {
+  for (let i = 0; i < TIMEIN.children.length; i++) {
+    TIMEOUT.children[i].removeAttribute('disabled', '');
+  }
+  if (TIMEIN.value === '12:00') {
+    TIMEOUT.children[0].setAttribute('selected', '');
+    TIMEOUT.children[1].setAttribute('disabled', '');
+    TIMEOUT.children[2].setAttribute('disabled', '');
+  }
+  if (TIMEIN.value === '13:00') {
+    TIMEOUT.children[0].setAttribute('disabled', '');
+    TIMEOUT.children[1].setAttribute('selected', '');
+    TIMEOUT.children[2].setAttribute('disabled', '');
+  }
+  if (TIMEIN.value === '14:00') {
+    TIMEOUT.children[0].setAttribute('disabled', '');
+    TIMEOUT.children[1].setAttribute('disabled', '');
+    TIMEOUT.children[2].setAttribute('selected', '');
+  }
+});
