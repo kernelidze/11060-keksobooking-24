@@ -1,6 +1,12 @@
 import {getUsersAdsArray} from './data.js';
 
-const TYPE_NAME = {flat: 'Квартира', bungalow: 'Бунгало', house: 'Дом', palace: 'Дворец', hotel: 'Отель'};
+const TYPE_NAME = {
+  flat: 'Квартира',
+  bungalow: 'Бунгало',
+  house: 'Дом',
+  palace: 'Дворец',
+  hotel: 'Отель',
+};
 
 const cardTemplate = document.querySelector('#card').content.querySelector('.popup');
 const mapCanvas = document.querySelector('#map-canvas');
@@ -45,5 +51,7 @@ userAdsArray.forEach((item) => {
 });
 
 mapCanvas.appendChild(fragment.children[1]);
+
+//[1, 2, 3].forEach((ss, number) => console.log(ss, number));
 
 
