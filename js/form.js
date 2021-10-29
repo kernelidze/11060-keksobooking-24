@@ -1,4 +1,5 @@
 const FORM = document.querySelector('.ad-form');
+const FIELDSETS = document.querySelectorAll('input, textarea, select');
 const FORM_TITLE_INPUT = FORM.querySelector('input[name=title]');
 const FORM_PRICE_INPUT = FORM.querySelector('input[name=price]');
 const HOUSE_TYPES = FORM.querySelector('#type');
@@ -13,6 +14,26 @@ const MIN_RENT_PRICE = {
   house: 5000,
   palace: 10000,
 };
+
+const formInteractiveElements = Object.values(FIELDSETS);
+
+const setFormUnactive = () => {
+  FORM.classList.add('ad-form--disabled');
+  formInteractiveElements.forEach((elements) => {
+    elements.setAttribute('disabled', '');
+  });
+};
+
+setFormUnactive();
+
+const setFormActive = () => {
+  FORM.classList.remove('ad-form--disabled');
+  formInteractiveElements.forEach((elements) => {
+    elements.removeAttribute('disabled', '');
+  });
+};
+
+setFormActive();
 
 FORM.action = 'https://24.javascript.pages.academy/keksobooking';
 FORM_TITLE_INPUT.setAttribute('required', '');
