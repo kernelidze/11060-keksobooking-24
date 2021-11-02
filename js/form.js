@@ -1,6 +1,7 @@
 const FORM = document.querySelector('.ad-form');
 const FIELDSETS = document.querySelectorAll('input, textarea, select');
 const FORM_TITLE_INPUT = FORM.querySelector('input[name=title]');
+const FORM_ADDRESS = FORM.querySelector('input[name=address]');
 const FORM_PRICE_INPUT = FORM.querySelector('input[name=price]');
 const HOUSE_TYPES = FORM.querySelector('#type');
 const ROOM_NUMBER = FORM.querySelector('select[name=rooms]');
@@ -24,8 +25,6 @@ const setFormUnactive = () => {
   });
 };
 
-setFormUnactive();
-
 const setFormActive = () => {
   FORM.classList.remove('ad-form--disabled');
   formInteractiveElements.forEach((elements) => {
@@ -34,6 +33,7 @@ const setFormActive = () => {
 };
 
 setFormActive();
+setFormUnactive();
 
 FORM.action = 'https://24.javascript.pages.academy/keksobooking';
 FORM_TITLE_INPUT.setAttribute('required', '');
@@ -121,3 +121,5 @@ TIMEIN.addEventListener('click', () => {
     TIMEOUT.children[2].setAttribute('selected', '');
   }
 });
+
+export {setFormActive, setFormUnactive, FORM_ADDRESS};

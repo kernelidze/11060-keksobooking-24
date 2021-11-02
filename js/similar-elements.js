@@ -50,8 +50,7 @@ userAdsArray.forEach((item) => {
   generateFragment(element1, item, fragment);
 });
 
-mapCanvas.appendChild(fragment.children[1]);
+//const randomLocations = userAdsArray.map((loc) => loc.location);
 
-//[1, 2, 3].forEach((ss, number) => console.log(ss, number));
-
-
+export {userAdsArray};
+//export {randomLocations};
