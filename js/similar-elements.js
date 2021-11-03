@@ -9,10 +9,10 @@ const TYPE_NAME = {
 };
 
 const cardTemplate = document.querySelector('#card').content.querySelector('.popup');
-const mapCanvas = document.querySelector('#map-canvas');
 const fragment = document.createDocumentFragment();
 
-const generateFragment = (element, item, currenFragment) => {
+const generateFragment = (item) => {
+  const element = cardTemplate.cloneNode(true);
   const arrayFeatures = item.offer.features;
   const featuresContainer = element.querySelector('.popup__features');
   const hollowPhoto = element.querySelector('.popup__photos');
@@ -23,12 +23,16 @@ const generateFragment = (element, item, currenFragment) => {
   element.querySelector('.popup__text--capacity').textContent = `${item.offer.rooms} комнаты для ${item.offer.guests} гостей`;
   element.querySelector('.popup__text--time').textContent = `Заезд после ${item.offer.checkin}, выезд до ${item.offer.checkout}`;
   featuresContainer.innerHTML = '';
-  arrayFeatures.forEach((feature) => {
-    const featuresListItem = document.createElement('li');
-    featuresListItem.classList.add('popup__feature');
-    featuresListItem.classList.add(`popup__feature--${feature}`);
-    element.querySelector('.popup__features').appendChild(featuresListItem);
-  });
+  if ( arrayFeatures.length === 0) {
+    featuresContainer.remove();
+  } else {
+    arrayFeatures.forEach((feature) => {
+      const featuresListItem = document.createElement('li');
+      featuresListItem.classList.add('popup__feature');
+      featuresListItem.classList.add(`popup__feature--${feature}`);
+      element.querySelector('.popup__features').appendChild(featuresListItem);
+    });
+  }
   element.querySelector('.popup__description').textContent = item.offer.description;
   hollowPhoto.innerHTML = '';
   item.offer.photos.forEach((photo) => {
@@ -41,17 +45,15 @@ const generateFragment = (element, item, currenFragment) => {
     element.querySelector('.popup__photos').appendChild(photoElement);
   });
   element.querySelector('.popup__avatar').src = item.author.avatar;
-  currenFragment.appendChild(element);
+  fragment.appendChild(element);
+  return element;
 };
 
 const userAdsArray = getUsersAdsArray();
+
 userAdsArray.forEach((item) => {
-  const element1 = cardTemplate.cloneNode(true);
-  generateFragment(element1, item, fragment);
+  generateFragment(item);
 });
 
-mapCanvas.appendChild(fragment.children[1]);
-
-//[1, 2, 3].forEach((ss, number) => console.log(ss, number));
-
+export {userAdsArray, generateFragment};
 
