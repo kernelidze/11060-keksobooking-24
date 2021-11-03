@@ -1,5 +1,5 @@
 import {setFormActive, setFormUnactive, FORM_ADDRESS} from './form.js';
-import {userAdsArray} from './similar-elements.js';
+import {userAdsArray, generateFragment} from './similar-elements.js';
 
 const map = L.map('map-canvas')
   .on('load', () => {
@@ -11,7 +11,7 @@ const map = L.map('map-canvas')
   .setView({
     lat: 35.68950,
     lng: 139.69171,
-  }, 10);
+  }, 12);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -51,20 +51,9 @@ const pinIcon = L.icon({
   iconAnchor: [20, 40],
 });
 
-//const randomLocations = userAdsArray.map((loc) => loc.location);
-//const randomOffers = userAdsArray.map((off) => off.offer);
-//const randomAvatars = userAdsArray.map((avt) => avt.avatar);
-
-const copyUnitedArray =  userAdsArray.map((copy) => {
-  const copyOffer = copy.offer;
-  const copyLocation = copy.location;
-  const result = Object.assign({}, copyOffer, copyLocation);
-  return result;
-});
-
-//Здесь совершенно не понял, как правильно передавать и выводить информацию в балун
-//был бы благодарен за обьяснение, в виде консультации, можно написать текстом в гите
-copyUnitedArray.forEach(({lat, lng, title, address, price, type, rooms, checkin, checkout, description, photos}) => {
+userAdsArray.forEach((item) => {
+  const lat = item.location.lat;
+  const lng = item.location.lng;
   const pinMarker = L.marker({
     lat,
     lng,
@@ -75,13 +64,5 @@ copyUnitedArray.forEach(({lat, lng, title, address, price, type, rooms, checkin,
   );
   pinMarker
     .addTo(map)
-    .bindPopup(`${title}
-    ${address}
-    ${price}
-    ${type}
-    ${rooms}
-    ${checkin}
-    ${checkout}
-    ${description}
-    ${photos}`);
+    .bindPopup(generateFragment(item));
 });
