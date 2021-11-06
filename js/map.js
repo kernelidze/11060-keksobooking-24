@@ -1,5 +1,24 @@
-import {setFormActive, setFormUnactive, FORM_ADDRESS} from './form.js';
-import {userAdsArray, generateFragment} from './similar-elements.js';
+import {generateFragment} from './similar-elements.js';
+import {getData} from './data-server.js';
+
+const form = document.querySelector('.ad-form');
+const formAddress = form.querySelector('input[name=address]');
+const formFieldsAll = document.querySelectorAll('input, textarea, select');
+const formInteractiveElements = Object.values(formFieldsAll);
+
+const setFormUnactive = () => {
+  form.classList.add('ad-form--disabled');
+  formInteractiveElements.forEach((elements) => {
+    elements.setAttribute('disabled', '');
+  });
+};
+
+const setFormActive = () => {
+  form.classList.remove('ad-form--disabled');
+  formInteractiveElements.forEach((elements) => {
+    elements.removeAttribute('disabled', '');
+  });
+};
 
 const map = L.map('map-canvas')
   .on('load', () => {
@@ -42,7 +61,7 @@ mainPinMarker.addTo(map);
 mainPinMarker.on('moveend', (evt) => {
   const LAT = evt.target.getLatLng().lat.toFixed(5);
   const LNG = evt.target.getLatLng().lng.toFixed(5);
-  FORM_ADDRESS.value = `${LAT} ${LNG}`;
+  formAddress.value = `${LAT} ${LNG}`;
 });
 
 const pinIcon = L.icon({
@@ -51,18 +70,28 @@ const pinIcon = L.icon({
   iconAnchor: [20, 40],
 });
 
-userAdsArray.forEach((item) => {
-  const lat = item.location.lat;
-  const lng = item.location.lng;
-  const pinMarker = L.marker({
-    lat,
-    lng,
-  },
-  {
-    icon: pinIcon,
-  },
-  );
-  pinMarker
-    .addTo(map)
-    .bindPopup(generateFragment(item));
-});
+const onSucces = (data) => {
+  data.slice(0, 10).forEach((item) => {
+    const lat = item.location.lat;
+    const lng = item.location.lng;
+    const pinMarker = L.marker({
+      lat,
+      lng,
+    },
+    {
+      icon: pinIcon,
+    },
+    );
+    pinMarker
+      .addTo(map)
+      .bindPopup(generateFragment(item));
+  });
+};
+
+getData(onSucces);
+
+const closePopup = () => {
+  map.closePopup();
+};
+
+export {closePopup};
