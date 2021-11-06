@@ -1,14 +1,15 @@
-const FORM = document.querySelector('.ad-form');
-const FIELDSETS = document.querySelectorAll('input, textarea, select');
-const FORM_TITLE_INPUT = FORM.querySelector('input[name=title]');
-const FORM_ADDRESS = FORM.querySelector('input[name=address]');
-const FORM_PRICE_INPUT = FORM.querySelector('input[name=price]');
-const HOUSE_TYPES = FORM.querySelector('#type');
-const ROOM_NUMBER = FORM.querySelector('select[name=rooms]');
-const ROOM_CAPACITY = FORM.querySelector('select[name=capacity]');
-const TIMEIN = FORM.querySelector('select[name=timein]');
-const TIMEOUT = FORM.querySelector('select[name=timeout]');
-const MIN_RENT_PRICE = {
+import {sendData} from './data-server.js';
+import {closePopup} from './map.js';
+
+const form = document.querySelector('.ad-form');
+const formTitleInput = form.querySelector('input[name=title]');
+const formPriceInput = form.querySelector('input[name=price]');
+const houseTypes = form.querySelector('#type');
+const roomNumbers = form.querySelector('select[name=rooms]');
+const roomCapacity = form.querySelector('select[name=capacity]');
+const timeIn = form.querySelector('select[name=timein]');
+const timeOut = form.querySelector('select[name=timeout]');
+const minRentPrice = {
   bungalow: 0,
   flat: 1000,
   hotel: 3000,
@@ -16,110 +17,123 @@ const MIN_RENT_PRICE = {
   palace: 10000,
 };
 
-const formInteractiveElements = Object.values(FIELDSETS);
+form.action = 'https://24.javascript.pages.academy/keksobooking';
+formTitleInput.setAttribute('required', '');
+formTitleInput.setAttribute('minlength', '30');
+formTitleInput.setAttribute('maxlength', '100');
+formPriceInput.setAttribute('required', '');
+formPriceInput.setAttribute('placeholder', `${minRentPrice[houseTypes.value]}`);
 
-const setFormUnactive = () => {
-  FORM.classList.add('ad-form--disabled');
-  formInteractiveElements.forEach((elements) => {
-    elements.setAttribute('disabled', '');
-  });
-};
-
-const setFormActive = () => {
-  FORM.classList.remove('ad-form--disabled');
-  formInteractiveElements.forEach((elements) => {
-    elements.removeAttribute('disabled', '');
-  });
-};
-
-setFormActive();
-setFormUnactive();
-
-FORM.action = 'https://24.javascript.pages.academy/keksobooking';
-FORM_TITLE_INPUT.setAttribute('required', '');
-FORM_TITLE_INPUT.setAttribute('minlength', '30');
-FORM_TITLE_INPUT.setAttribute('maxlength', '100');
-FORM_PRICE_INPUT.setAttribute('required', '');
-FORM_PRICE_INPUT.setAttribute('placeholder', `${MIN_RENT_PRICE[HOUSE_TYPES.value]}`);
-
-HOUSE_TYPES.addEventListener('change', () => {
-  FORM_PRICE_INPUT.setAttribute('placeholder', `${MIN_RENT_PRICE[HOUSE_TYPES.value]}`);
+houseTypes.addEventListener('change', () => {
+  formPriceInput.setAttribute('placeholder', `${minRentPrice[houseTypes.value]}`);
 });
 
-FORM_PRICE_INPUT.addEventListener('input', () => {
-  const MIN_PRICE_VALUE = MIN_RENT_PRICE[HOUSE_TYPES.value];
+formPriceInput.addEventListener('input', () => {
+  const minPriceValue = minRentPrice[houseTypes.value];
   const MAX_PRICE_VALUE = 1000000;
-  if (FORM_PRICE_INPUT.value < MIN_PRICE_VALUE) {
-    FORM_PRICE_INPUT.setCustomValidity(`Минимальная цена должна быть на ${MIN_PRICE_VALUE - FORM_PRICE_INPUT.value} руб. выше`);
-  } else if (FORM_PRICE_INPUT.value > MAX_PRICE_VALUE) {
-    FORM_PRICE_INPUT.setCustomValidity(`Максимальная цена должна быть на ${MAX_PRICE_VALUE - FORM_PRICE_INPUT.value} руб. ниже`);
+  if (formPriceInput.value < minPriceValue) {
+    formPriceInput.setCustomValidity(`Минимальная цена должна быть на ${minPriceValue - formPriceInput.value} руб. выше`);
+  } else if (formPriceInput.value > MAX_PRICE_VALUE) {
+    formPriceInput.setCustomValidity(`Максимальная цена должна быть на ${MAX_PRICE_VALUE - formPriceInput.value} руб. ниже`);
   } else {
-    FORM_PRICE_INPUT.setCustomValidity('');
+    formPriceInput.setCustomValidity('');
   }
-  FORM_PRICE_INPUT.reportValidity();
+  formPriceInput.reportValidity();
 });
 
-FORM_TITLE_INPUT.addEventListener('input', () => {
-  const valueLength = FORM_TITLE_INPUT.value.length;
+formTitleInput.addEventListener('input', () => {
+  const valueLength = formTitleInput.value.length;
   const MIN_NAME_LENGTH = 30;
   const MAX_NAME_LENGTH = 100;
   if (valueLength < MIN_NAME_LENGTH) {
-    FORM_TITLE_INPUT.setCustomValidity(`Ещё ${MIN_NAME_LENGTH - valueLength} симв.`);
+    formTitleInput.setCustomValidity(`Ещё ${MIN_NAME_LENGTH - valueLength} симв.`);
   } else if (valueLength > MAX_NAME_LENGTH) {
-    FORM_TITLE_INPUT.setCustomValidity(`Удалите лишние ${valueLength - FORM_TITLE_INPUT.maxlength} симв.`);
+    formTitleInput.setCustomValidity(`Удалите лишние ${valueLength - formTitleInput.maxlength} симв.`);
   } else {
-    FORM_TITLE_INPUT.setCustomValidity('');
+    formTitleInput.setCustomValidity('');
   }
-  FORM_TITLE_INPUT.reportValidity();
+  formTitleInput.reportValidity();
 });
 
-ROOM_NUMBER.addEventListener('click', () => {
-  for (let i = 0; i < ROOM_CAPACITY.children.length; i++) {
-    ROOM_CAPACITY.children[i].removeAttribute('disabled', '');
-    ROOM_CAPACITY.children[i].removeAttribute('selected', '');
+roomNumbers.addEventListener('click', () => {
+  for (let i = 0; i < roomCapacity.children.length; i++) {
+    roomCapacity.children[i].removeAttribute('disabled', '');
+    roomCapacity.children[i].removeAttribute('selected', '');
   }
-  if (ROOM_NUMBER.value === '1') {
-    ROOM_CAPACITY.children[0].setAttribute('disabled', '');
-    ROOM_CAPACITY.children[1].setAttribute('disabled', '');
-    ROOM_CAPACITY.children[2].setAttribute('selected', '');
-    ROOM_CAPACITY.children[3].setAttribute('disabled', '');
+  if (roomNumbers.value === '1') {
+    roomCapacity.children[0].setAttribute('disabled', '');
+    roomCapacity.children[1].setAttribute('disabled', '');
+    roomCapacity.children[2].setAttribute('selected', '');
+    roomCapacity.children[3].setAttribute('disabled', '');
   }
-  if (ROOM_NUMBER.value === '2') {
-    ROOM_CAPACITY.children[0].setAttribute('disabled', '');
-    ROOM_CAPACITY.children[1].setAttribute('selected', '');
-    ROOM_CAPACITY.children[3].setAttribute('disabled', '');
+  if (roomNumbers.value === '2') {
+    roomCapacity.children[0].setAttribute('disabled', '');
+    roomCapacity.children[1].setAttribute('selected', '');
+    roomCapacity.children[3].setAttribute('disabled', '');
   }
-  if (ROOM_NUMBER.value === '3') {
-    ROOM_CAPACITY.children[0].setAttribute('selected', '');
-    ROOM_CAPACITY.children[3].setAttribute('disabled', '');
+  if (roomNumbers.value === '3') {
+    roomCapacity.children[0].setAttribute('selected', '');
+    roomCapacity.children[3].setAttribute('disabled', '');
   }
-  if (ROOM_NUMBER.value === '100') {
-    ROOM_CAPACITY.children[0].setAttribute('disabled', '');
-    ROOM_CAPACITY.children[1].setAttribute('disabled', '');
-    ROOM_CAPACITY.children[2].setAttribute('disabled', '');
-    ROOM_CAPACITY.children[3].setAttribute('selected', '');
-  }
-});
-
-TIMEIN.addEventListener('click', () => {
-  for (let i = 0; i < TIMEIN.children.length; i++) {
-    TIMEOUT.children[i].removeAttribute('disabled', '');
-  }
-  if (TIMEIN.value === '12:00') {
-    TIMEOUT.children[0].setAttribute('selected', '');
-    TIMEOUT.children[1].setAttribute('disabled', '');
-    TIMEOUT.children[2].setAttribute('disabled', '');
-  }
-  if (TIMEIN.value === '13:00') {
-    TIMEOUT.children[0].setAttribute('disabled', '');
-    TIMEOUT.children[1].setAttribute('selected', '');
-    TIMEOUT.children[2].setAttribute('disabled', '');
-  }
-  if (TIMEIN.value === '14:00') {
-    TIMEOUT.children[0].setAttribute('disabled', '');
-    TIMEOUT.children[1].setAttribute('disabled', '');
-    TIMEOUT.children[2].setAttribute('selected', '');
+  if (roomNumbers.value === '100') {
+    roomCapacity.children[0].setAttribute('disabled', '');
+    roomCapacity.children[1].setAttribute('disabled', '');
+    roomCapacity.children[2].setAttribute('disabled', '');
+    roomCapacity.children[3].setAttribute('selected', '');
   }
 });
 
-export {setFormActive, setFormUnactive, FORM_ADDRESS};
+timeIn.addEventListener('click', () => {
+  for (let i = 0; i < timeIn.children.length; i++) {
+    timeOut.children[i].removeAttribute('disabled', '');
+  }
+  if (timeIn.value === '12:00') {
+    timeOut.children[0].setAttribute('selected', '');
+    timeOut.children[1].setAttribute('disabled', '');
+    timeOut.children[2].setAttribute('disabled', '');
+  }
+  if (timeIn.value === '13:00') {
+    timeOut.children[0].setAttribute('disabled', '');
+    timeOut.children[1].setAttribute('selected', '');
+    timeOut.children[2].setAttribute('disabled', '');
+  }
+  if (timeIn.value === '14:00') {
+    timeOut.children[0].setAttribute('disabled', '');
+    timeOut.children[1].setAttribute('disabled', '');
+    timeOut.children[2].setAttribute('selected', '');
+  }
+});
+
+const getSuccessForm = () => {
+  const successFormTemplate = document.querySelector('#success').content.querySelector('.success');
+  const successForm = successFormTemplate.cloneNode(true);
+  document.body.appendChild(successForm);
+  successForm.onclick = () => document.body.removeChild(successForm);
+  window.addEventListener('keydown', (evt) => {
+    if (evt.keyCode === 27) {
+      document.body.removeChild(successForm);
+    }
+  });
+};
+
+const getErrorForm = () => {
+  const errorFormTemplate = document.querySelector('#error').content.querySelector('.error');
+  const errorForm = errorFormTemplate.cloneNode(true);
+  document.body.appendChild(errorForm);
+  errorForm.onclick = () => document.body.removeChild(errorForm);
+  errorForm.addEventListener('keydown', (evt) => {
+    if (evt.keyCode===27) {
+      document.body.removeChild(errorForm);
+    }
+  });
+};
+
+form.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+  const formData = new FormData(evt.target);
+  sendData(getSuccessForm, getErrorForm, formData);
+});
+
+form.addEventListener('reset', () => {
+  closePopup();
+});
