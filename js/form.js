@@ -24,6 +24,20 @@ formTitleInput.setAttribute('maxlength', '100');
 formPriceInput.setAttribute('required', '');
 formPriceInput.setAttribute('placeholder', `${minRentPrice[houseTypes.value]}`);
 
+formTitleInput.addEventListener('input', () => {
+  const valueLength = formTitleInput.value.length;
+  const MIN_NAME_LENGTH = 30;
+  const MAX_NAME_LENGTH = 100;
+  if (valueLength < MIN_NAME_LENGTH) {
+    formTitleInput.setCustomValidity(`Ещё ${MIN_NAME_LENGTH - valueLength} симв.`);
+  } else if (valueLength > MAX_NAME_LENGTH) {
+    formTitleInput.setCustomValidity(`Удалите лишние ${valueLength - formTitleInput.maxlength} симв.`);
+  } else {
+    formTitleInput.setCustomValidity('');
+  }
+  formTitleInput.reportValidity();
+});
+
 houseTypes.addEventListener('change', () => {
   formPriceInput.setAttribute('placeholder', `${minRentPrice[houseTypes.value]}`);
 });
@@ -39,20 +53,6 @@ formPriceInput.addEventListener('input', () => {
     formPriceInput.setCustomValidity('');
   }
   formPriceInput.reportValidity();
-});
-
-formTitleInput.addEventListener('input', () => {
-  const valueLength = formTitleInput.value.length;
-  const MIN_NAME_LENGTH = 30;
-  const MAX_NAME_LENGTH = 100;
-  if (valueLength < MIN_NAME_LENGTH) {
-    formTitleInput.setCustomValidity(`Ещё ${MIN_NAME_LENGTH - valueLength} симв.`);
-  } else if (valueLength > MAX_NAME_LENGTH) {
-    formTitleInput.setCustomValidity(`Удалите лишние ${valueLength - formTitleInput.maxlength} симв.`);
-  } else {
-    formTitleInput.setCustomValidity('');
-  }
-  formTitleInput.reportValidity();
 });
 
 roomNumbers.addEventListener('click', () => {
@@ -122,7 +122,7 @@ const getErrorForm = () => {
   document.body.appendChild(errorForm);
   errorForm.onclick = () => document.body.removeChild(errorForm);
   errorForm.addEventListener('keydown', (evt) => {
-    if (evt.keyCode===27) {
+    if (evt.keyCode === 27) {
       document.body.removeChild(errorForm);
     }
   });

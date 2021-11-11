@@ -1,10 +1,18 @@
 import {generateFragment} from './similar-elements.js';
 import {getData} from './data-server.js';
+import {houseFilter, priceFilter, roomsFilter, guestsFilter, wifiFilter, dishwasherFilter, parkingFilter, washerFilter, elevatorFilter, conditionerFilter} from './data-filter.js';
 
 const form = document.querySelector('.ad-form');
 const formAddress = form.querySelector('input[name=address]');
 const formFieldsAll = document.querySelectorAll('input, textarea, select');
 const formInteractiveElements = Object.values(formFieldsAll);
+
+const tokyoCenterLatLng =  {
+  lat: 35.68950,
+  lng: 139.69171,
+};
+
+formAddress.value = `${tokyoCenterLatLng.lat} ${tokyoCenterLatLng.lng}`;
 
 const setFormUnactive = () => {
   form.classList.add('ad-form--disabled');
@@ -70,8 +78,27 @@ const pinIcon = L.icon({
   iconAnchor: [20, 40],
 });
 
-const onSucces = (data) => {
-  data.slice(0, 10).forEach((item) => {
+const closePopup = () => {
+  map.closePopup();
+};
+const markerGroup = L.layerGroup().addTo(map);
+
+let originalData = [];
+
+const renderPins = () => {
+  const filteredData = originalData
+    .filter(houseFilter)
+    .filter(priceFilter)
+    .filter(roomsFilter)
+    .filter(guestsFilter)
+    .filter(wifiFilter)
+    .filter(dishwasherFilter)
+    .filter(parkingFilter)
+    .filter(washerFilter)
+    .filter(elevatorFilter)
+    .filter(conditionerFilter);
+  console.log(filteredData);
+  filteredData.slice(0, 10).forEach((item) => {
     const lat = item.location.lat;
     const lng = item.location.lng;
     const pinMarker = L.marker({
@@ -83,15 +110,16 @@ const onSucces = (data) => {
     },
     );
     pinMarker
-      .addTo(map)
+      .addTo(markerGroup)
       .bindPopup(generateFragment(item));
   });
 };
 
-getData(onSucces);
-
-const closePopup = () => {
-  map.closePopup();
+const onSucces = (data) => {
+  originalData = data;
+  renderPins();
 };
 
-export {closePopup};
+getData(onSucces);
+
+export {closePopup, renderPins, markerGroup};
