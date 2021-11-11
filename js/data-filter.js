@@ -133,7 +133,7 @@ const handlerFilters = (name) => {
   name.addEventListener('change', (evt) => {
     markerGroup.clearLayers();
     closePopup();
-    const debouncedRender = debounce(renderPins, 1500);
+    const debouncedRender = debounce(renderPins, 500);
     debouncedRender();
     name.removeEventListener('change', (evt));
   });
