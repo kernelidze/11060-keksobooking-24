@@ -1,4 +1,5 @@
 import {closePopup, renderPins, markerGroup} from './map.js';
+import {debounce} from './util.js';
 
 const mapFiltersForm = document.querySelector('.map__filters');
 const houseType = mapFiltersForm.querySelector('#housing-type');
@@ -14,120 +15,71 @@ const featureWasher = houseFeatures.querySelector('#filter-washer');
 const featureElevator = houseFeatures.querySelector('#filter-elevator');
 const featureConditioner = houseFeatures.querySelector('#filter-conditioner');
 
-const wifiFilter = ({offer}) => {
-  if (offer.features && featureWifi.checked && offer.features.includes('wifi')) {
-    return true;
-  } else if (featureWifi.checked === false) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-const dishwasherFilter = ({offer}) => {
-  if (offer.features && featureDishwasher.checked && offer.features.includes('dishwasher')) {
-    return true;
-  } else if (featureDishwasher.checked === false) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-const parkingFilter = ({offer}) => {
-  if (offer.features && featureParking.checked && offer.features.includes('parking')) {
-    return true;
-  } else if (featureParking.checked === false) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-const washerFilter = ({offer}) => {
-  if (offer.features && featureWasher.checked && offer.features.includes('washer')) {
-    return true;
-  } else if (featureWasher.checked === false) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-const elevatorFilter = ({offer}) => {
-  if (offer.features && featureElevator.checked && offer.features.includes('elevator')) {
-    return true;
-  } else if (featureElevator.checked === false) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-const conditionerFilter = ({offer}) => {
-  if (offer.features && featureConditioner.checked && offer.features.includes('conditioner')) {
-    return true;
-  } else if (featureConditioner.checked === false) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-const houseFilter = ({offer}) => {
-  if (offer.type === houseType.value || houseType.value === 'any') {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-const priceFilter = ({offer}) => {
-  if (housePrice.value === 'any') {
-    return true;
-  }
-  if (housePrice.value === 'middle') {
-    if (offer.price > '10000' && offer.price < '50000') {
-      return true;
+const getFeaturesRank = ({offer}) => {
+  let rank = 0;
+  if (offer.features && offer.features.length > 0) {
+    if (offer.features.includes('wifi')) {
+      rank += 1;
+    }
+    if (offer.features.includes('dishwasher')) {
+      rank += 1;
+    }
+    if (offer.features.includes('parking')) {
+      rank += 1;
+    }
+    if (offer.features.includes('washer')) {
+      rank += 1;
+    }
+    if (offer.features.includes('elevator')) {
+      rank += 1;
+    }
+    if (offer.features.includes('conditioner')) {
+      rank += 1;
     }
   }
-  if (housePrice.value === 'low') {
-    if (offer.price < '10000') {
+  return rank;
+};
+
+const compareFeatures = (featureA, featureB) => {
+  const rankA = getFeaturesRank(featureA);
+  const rankB = getFeaturesRank(featureB);
+  return rankB - rankA;
+};
+
+const getFiltration = () => {
+  const wifiFilter = ({offer}) => (offer.features && featureWifi.checked && offer.features.includes('wifi') || !featureWifi.checked);
+  const dishwasherFilter = ({offer}) => (offer.features && featureDishwasher.checked && offer.features.includes('dishwasher') || !featureDishwasher.checked);
+  const parkingFilter = ({offer}) => (offer.features && featureParking.checked && offer.features.includes('parking') || !featureParking.checked);
+  const washerFilter = ({offer}) => (offer.features && featureWasher.checked && offer.features.includes('washer') || !featureWasher.checked);
+  const elevatorFilter = ({offer}) => (offer.features && featureElevator.checked && offer.features.includes('elevator') || !featureElevator.checked);
+  const conditionerFilter = ({offer}) => (offer.features && featureConditioner.checked && offer.features.includes('conditioner') || !featureConditioner.checked);
+  const houseFilter = ({offer}) => (offer.type === houseType.value || houseType.value === 'any');
+  const roomsFilter = ({offer}) => (offer.rooms >=  houseRooms.value || houseRooms.value === 'any');
+  const guestsFilter = ({offer}) => (offer.guests <= houseGuests.value || houseGuests.value === 'any');
+  const priceFilter = ({offer}) => {
+    if (housePrice.value === 'any') {
       return true;
     }
-  }
-  if (housePrice.value === 'high') {
-    if (offer.price >= '50000') {
-      return true;
+    if (housePrice.value === 'middle') {
+      if (offer.price > '10000' && offer.price < '50000') {
+        return true;
+      }
     }
-  } else {
-    return false;
-  }
-};
-
-const roomsFilter = ({offer}) => {
-  if (offer.rooms >=  houseRooms.value || houseRooms.value === 'any') {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-const guestsFilter = ({offer}) => {
-  if (offer.guests <= houseGuests.value || houseGuests.value === 'any') {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-function debounce (callback, timeoutDelay) {
-  let timeoutId;
-  return (...rest) => {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+    if (housePrice.value === 'low') {
+      if (offer.price < '10000') {
+        return true;
+      }
+    }
+    if (housePrice.value === 'high') {
+      if (offer.price >= '50000') {
+        return true;
+      }
+    } else {
+      return false;
+    }
   };
-}
+  return (houseFilter, priceFilter, roomsFilter, guestsFilter, wifiFilter, dishwasherFilter, parkingFilter, washerFilter, elevatorFilter, conditionerFilter);
+};
 
 const handlerFilters = (name) => {
   name.addEventListener('change', (evt) => {
@@ -150,4 +102,4 @@ handlerFilters(featureDishwasher);
 handlerFilters(featureElevator);
 handlerFilters(featureConditioner);
 
-export {houseFilter, priceFilter, roomsFilter, guestsFilter, wifiFilter, dishwasherFilter, parkingFilter, washerFilter, elevatorFilter, conditionerFilter};
+export {getFiltration, compareFeatures};

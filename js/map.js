@@ -1,6 +1,6 @@
 import {generateFragment} from './similar-elements.js';
 import {getData} from './data-server.js';
-import {houseFilter, priceFilter, roomsFilter, guestsFilter, wifiFilter, dishwasherFilter, parkingFilter, washerFilter, elevatorFilter, conditionerFilter} from './data-filter.js';
+import {getFiltration, compareFeatures} from './data-filter.js';
 
 const form = document.querySelector('.ad-form');
 const formAddress = form.querySelector('input[name=address]');
@@ -81,24 +81,14 @@ const pinIcon = L.icon({
 const closePopup = () => {
   map.closePopup();
 };
+
 const markerGroup = L.layerGroup().addTo(map);
 
 let originalData = [];
 
 const renderPins = () => {
-  const filteredData = originalData
-    .filter(houseFilter)
-    .filter(priceFilter)
-    .filter(roomsFilter)
-    .filter(guestsFilter)
-    .filter(wifiFilter)
-    .filter(dishwasherFilter)
-    .filter(parkingFilter)
-    .filter(washerFilter)
-    .filter(elevatorFilter)
-    .filter(conditionerFilter);
-  console.log(filteredData);
-  filteredData.slice(0, 10).forEach((item) => {
+  const filteredData = originalData.filter(getFiltration);
+  filteredData.sort(compareFeatures).slice(0, 10).forEach((item) => {
     const lat = item.location.lat;
     const lng = item.location.lng;
     const pinMarker = L.marker({
