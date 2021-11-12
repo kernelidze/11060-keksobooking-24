@@ -102,4 +102,4 @@ handlerFilters(featureDishwasher);
 handlerFilters(featureElevator);
 handlerFilters(featureConditioner);
 
-export {getFiltration, compareFeatures};
+export {getFiltration, compareFeatures, mapFiltersForm};

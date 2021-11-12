@@ -7,4 +7,3 @@ function debounce (callback, timeoutDelay) {
 }
 
 export {debounce};
-

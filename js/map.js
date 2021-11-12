@@ -1,8 +1,9 @@
 import {generateFragment} from './similar-elements.js';
 import {getData} from './data-server.js';
-import {getFiltration, compareFeatures} from './data-filter.js';
+import {getFiltration, compareFeatures, mapFiltersForm} from './data-filter.js';
 
 const form = document.querySelector('.ad-form');
+const resetButton = document.querySelector('.ad-form__reset');
 const formAddress = form.querySelector('input[name=address]');
 const formFieldsAll = document.querySelectorAll('input, textarea, select');
 const formInteractiveElements = Object.values(formFieldsAll);
@@ -36,8 +37,8 @@ const map = L.map('map-canvas')
     setFormUnactive();
   })
   .setView({
-    lat: 35.68950,
-    lng: 139.69171,
+    lat: tokyoCenterLatLng.lat,
+    lng: tokyoCenterLatLng.lng,
   }, 12);
 
 L.tileLayer(
@@ -111,5 +112,25 @@ const onSucces = (data) => {
 };
 
 getData(onSucces);
+
+const resetDataHandler = () => {
+  resetButton.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    form.reset();
+    closePopup();
+    mapFiltersForm.reset();
+    map.setView({
+      lat: tokyoCenterLatLng.lat,
+      lng: tokyoCenterLatLng.lng,
+    }, 12);
+    mainPinMarker.setLatLng({
+      lat: tokyoCenterLatLng.lat,
+      lng: tokyoCenterLatLng.lng,
+    });
+    formAddress.value = `${tokyoCenterLatLng.lat} ${tokyoCenterLatLng.lng}`;
+  });
+};
+
+resetDataHandler();
 
 export {closePopup, renderPins, markerGroup};

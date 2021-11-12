@@ -1,5 +1,4 @@
 import {sendData} from './data-server.js';
-import {closePopup} from './map.js';
 
 const form = document.querySelector('.ad-form');
 const formTitleInput = form.querySelector('input[name=title]');
@@ -132,8 +131,4 @@ form.addEventListener('submit', (evt) => {
   evt.preventDefault();
   const formData = new FormData(evt.target);
   sendData(getSuccessForm, getErrorForm, formData);
-});
-
-form.addEventListener('reset', () => {
-  closePopup();
 });
