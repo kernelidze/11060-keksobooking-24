@@ -46,17 +46,17 @@ const compareFeatures = (featureA, featureB) => {
   return rankB - rankA;
 };
 
-const getFiltration = () => {
-  const wifiFilter = ({offer}) => (offer.features && featureWifi.checked && offer.features.includes('wifi') || !featureWifi.checked);
-  const dishwasherFilter = ({offer}) => (offer.features && featureDishwasher.checked && offer.features.includes('dishwasher') || !featureDishwasher.checked);
-  const parkingFilter = ({offer}) => (offer.features && featureParking.checked && offer.features.includes('parking') || !featureParking.checked);
-  const washerFilter = ({offer}) => (offer.features && featureWasher.checked && offer.features.includes('washer') || !featureWasher.checked);
-  const elevatorFilter = ({offer}) => (offer.features && featureElevator.checked && offer.features.includes('elevator') || !featureElevator.checked);
-  const conditionerFilter = ({offer}) => (offer.features && featureConditioner.checked && offer.features.includes('conditioner') || !featureConditioner.checked);
-  const houseFilter = ({offer}) => (offer.type === houseType.value || houseType.value === 'any');
-  const roomsFilter = ({offer}) => (offer.rooms >=  houseRooms.value || houseRooms.value === 'any');
-  const guestsFilter = ({offer}) => (offer.guests <= houseGuests.value || houseGuests.value === 'any');
-  const priceFilter = ({offer}) => {
+const getFiltration = ({offer}) => {
+  const wifiFilter = (offer.features && featureWifi.checked && offer.features.includes('wifi') || !featureWifi.checked);
+  const dishwasherFilter = (offer.features && featureDishwasher.checked && offer.features.includes('dishwasher') || !featureDishwasher.checked);
+  const parkingFilter = (offer.features && featureParking.checked && offer.features.includes('parking') || !featureParking.checked);
+  const washerFilter = (offer.features && featureWasher.checked && offer.features.includes('washer') || !featureWasher.checked);
+  const elevatorFilter = (offer.features && featureElevator.checked && offer.features.includes('elevator') || !featureElevator.checked);
+  const conditionerFilter = (offer.features && featureConditioner.checked && offer.features.includes('conditioner') || !featureConditioner.checked);
+  const houseFilter = (offer.type === houseType.value || houseType.value === 'any');
+  const roomsFilter = (offer.rooms >=  houseRooms.value || houseRooms.value === 'any');
+  const guestsFilter = (offer.guests <= houseGuests.value || houseGuests.value === 'any');
+  const priceFilter = () => {
     if (housePrice.value === 'any') {
       return true;
     }
@@ -78,7 +78,7 @@ const getFiltration = () => {
       return false;
     }
   };
-  return (houseFilter, priceFilter, roomsFilter, guestsFilter, wifiFilter, dishwasherFilter, parkingFilter, washerFilter, elevatorFilter, conditionerFilter);
+  return wifiFilter && dishwasherFilter && parkingFilter && washerFilter && elevatorFilter && conditionerFilter && houseFilter && priceFilter() && roomsFilter && guestsFilter;
 };
 
 const handlerFilters = (name) => {

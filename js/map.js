@@ -29,7 +29,7 @@ const setFormActive = () => {
   formInteractiveElements.forEach((elements) => {
     elements.removeAttribute('disabled', '');
   });
-  formAddress.setAttribute('disabled', '');
+  formAddress.setAttribute('readonly', '');
 };
 
 const map = L.map('map-canvas')
