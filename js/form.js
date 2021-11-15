@@ -8,6 +8,7 @@ const roomNumbers = form.querySelector('select[name=rooms]');
 const roomCapacity = form.querySelector('select[name=capacity]');
 const timeIn = form.querySelector('select[name=timein]');
 const timeOut = form.querySelector('select[name=timeout]');
+const ESC_KEYCODE = 27;
 const minRentPrice = {
   bungalow: 0,
   flat: 1000,
@@ -54,6 +55,8 @@ formPriceInput.addEventListener('input', () => {
   formPriceInput.reportValidity();
 });
 
+roomCapacity.children[2].setAttribute('selected', '');
+
 roomNumbers.addEventListener('click', () => {
   for (let i = 0; i < roomCapacity.children.length; i++) {
     roomCapacity.children[i].removeAttribute('disabled', '');
@@ -84,22 +87,31 @@ roomNumbers.addEventListener('click', () => {
 
 timeIn.addEventListener('click', () => {
   for (let i = 0; i < timeIn.children.length; i++) {
-    timeOut.children[i].removeAttribute('disabled', '');
+    timeOut.children[i].removeAttribute('selected', '');
   }
   if (timeIn.value === '12:00') {
     timeOut.children[0].setAttribute('selected', '');
-    timeOut.children[1].setAttribute('disabled', '');
-    timeOut.children[2].setAttribute('disabled', '');
   }
   if (timeIn.value === '13:00') {
-    timeOut.children[0].setAttribute('disabled', '');
     timeOut.children[1].setAttribute('selected', '');
-    timeOut.children[2].setAttribute('disabled', '');
   }
   if (timeIn.value === '14:00') {
-    timeOut.children[0].setAttribute('disabled', '');
-    timeOut.children[1].setAttribute('disabled', '');
     timeOut.children[2].setAttribute('selected', '');
+  }
+});
+
+timeOut.addEventListener('click', () => {
+  for (let i = 0; i < timeOut.children.length; i++) {
+    timeIn.children[i].removeAttribute('selected', '');
+  }
+  if (timeOut.value === '12:00') {
+    timeIn.children[0].setAttribute('selected', '');
+  }
+  if (timeOut.value === '13:00') {
+    timeIn.children[1].setAttribute('selected', '');
+  }
+  if (timeOut.value === '14:00') {
+    timeIn.children[2].setAttribute('selected', '');
   }
 });
 
@@ -121,7 +133,7 @@ const getErrorForm = () => {
   document.body.appendChild(errorForm);
   errorForm.onclick = () => document.body.removeChild(errorForm);
   errorForm.addEventListener('keydown', (evt) => {
-    if (evt.keyCode === 27) {
+    if (evt.keyCode === ESC_KEYCODE) {
       document.body.removeChild(errorForm);
     }
   });

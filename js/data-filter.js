@@ -1,12 +1,12 @@
 import {closePopup, renderPins, markerGroup} from './map.js';
 import {debounce} from './util.js';
 
+const DEBOUNCE_DELAY = 500;
 const mapFiltersForm = document.querySelector('.map__filters');
 const houseType = mapFiltersForm.querySelector('#housing-type');
 const housePrice = mapFiltersForm.querySelector('#housing-price');
 const houseRooms = mapFiltersForm.querySelector('#housing-rooms');
 const houseGuests = mapFiltersForm.querySelector('#housing-guests');
-
 const houseFeatures = mapFiltersForm.querySelector('#housing-features');
 const featureWifi = houseFeatures.querySelector('#filter-wifi');
 const featureDishwasher = houseFeatures.querySelector('#filter-dishwasher');
@@ -85,7 +85,7 @@ const handlerFilters = (name) => {
   name.addEventListener('change', (evt) => {
     markerGroup.clearLayers();
     closePopup();
-    const debouncedRender = debounce(renderPins, 500);
+    const debouncedRender = debounce(renderPins, DEBOUNCE_DELAY);
     debouncedRender();
     name.removeEventListener('change', (evt));
   });

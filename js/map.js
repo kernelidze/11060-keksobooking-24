@@ -8,6 +8,8 @@ const formAddress = form.querySelector('input[name=address]');
 const formFieldsAll = document.querySelectorAll('input, textarea, select');
 const formInteractiveElements = Object.values(formFieldsAll);
 
+const MAP_SCALE = 12;
+const MAX_DATA_OFFERS = 10;
 const tokyoCenterLatLng =  {
   lat: 35.68950,
   lng: 139.69171,
@@ -27,6 +29,7 @@ const setFormActive = () => {
   formInteractiveElements.forEach((elements) => {
     elements.removeAttribute('disabled', '');
   });
+  formAddress.setAttribute('disabled', '');
 };
 
 const map = L.map('map-canvas')
@@ -39,7 +42,7 @@ const map = L.map('map-canvas')
   .setView({
     lat: tokyoCenterLatLng.lat,
     lng: tokyoCenterLatLng.lng,
-  }, 12);
+  }, MAP_SCALE);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -56,8 +59,8 @@ const mainPinIcon = L.icon({
 
 const mainPinMarker = L.marker(
   {
-    lat: 35.68950,
-    lng: 139.69171,
+    lat: tokyoCenterLatLng.lat,
+    lng: tokyoCenterLatLng.lng,
   },
   {
     draggable: true,
@@ -89,7 +92,7 @@ let originalData = [];
 
 const renderPins = () => {
   const filteredData = originalData.filter(getFiltration);
-  filteredData.sort(compareFeatures).slice(0, 10).forEach((item) => {
+  filteredData.sort(compareFeatures).slice(0, MAX_DATA_OFFERS).forEach((item) => {
     const lat = item.location.lat;
     const lng = item.location.lng;
     const pinMarker = L.marker({
@@ -122,7 +125,7 @@ const resetDataHandler = () => {
     map.setView({
       lat: tokyoCenterLatLng.lat,
       lng: tokyoCenterLatLng.lng,
-    }, 12);
+    }, MAP_SCALE);
     mainPinMarker.setLatLng({
       lat: tokyoCenterLatLng.lat,
       lng: tokyoCenterLatLng.lng,
