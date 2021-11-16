@@ -1,4 +1,5 @@
 import {sendData} from './data-server.js';
+import {setResetAll} from './map.js';
 
 const form = document.querySelector('.ad-form');
 const formTitleInput = form.querySelector('input[name=title]');
@@ -6,6 +7,7 @@ const formPriceInput = form.querySelector('input[name=price]');
 const houseTypes = form.querySelector('#type');
 const roomNumbers = form.querySelector('select[name=rooms]');
 const roomCapacity = form.querySelector('select[name=capacity]');
+const roomCapacityOptions = form.querySelector('select[name=capacity]').querySelectorAll('option');
 const timeIn = form.querySelector('select[name=timein]');
 const timeOut = form.querySelector('select[name=timeout]');
 const ESC_KEYCODE = 27;
@@ -23,6 +25,7 @@ formTitleInput.setAttribute('minlength', '30');
 formTitleInput.setAttribute('maxlength', '100');
 formPriceInput.setAttribute('required', '');
 formPriceInput.setAttribute('placeholder', `${minRentPrice[houseTypes.value]}`);
+roomCapacity.value = roomNumbers.value;
 
 formTitleInput.addEventListener('input', () => {
   const valueLength = formTitleInput.value.length;
@@ -38,8 +41,16 @@ formTitleInput.addEventListener('input', () => {
   formTitleInput.reportValidity();
 });
 
+const setPriceInput = () => {
+  formPriceInput.value = `${minRentPrice[houseTypes.value]}`;
+  formPriceInput.setAttribute('min', `${minRentPrice[houseTypes.value]}`);
+};
+setPriceInput();
+
 houseTypes.addEventListener('change', () => {
   formPriceInput.setAttribute('placeholder', `${minRentPrice[houseTypes.value]}`);
+  formPriceInput.setAttribute('min', `${minRentPrice[houseTypes.value]}`);
+  formPriceInput.value = `${minRentPrice[houseTypes.value]}`;
 });
 
 formPriceInput.addEventListener('input', () => {
@@ -55,73 +66,44 @@ formPriceInput.addEventListener('input', () => {
   formPriceInput.reportValidity();
 });
 
-roomCapacity.children[2].setAttribute('selected', '');
-
-roomNumbers.addEventListener('click', () => {
-  for (let i = 0; i < roomCapacity.children.length; i++) {
-    roomCapacity.children[i].removeAttribute('disabled', '');
-    roomCapacity.children[i].removeAttribute('selected', '');
-  }
-  if (roomNumbers.value === '1') {
-    roomCapacity.children[0].setAttribute('disabled', '');
-    roomCapacity.children[1].setAttribute('disabled', '');
-    roomCapacity.children[2].setAttribute('selected', '');
-    roomCapacity.children[3].setAttribute('disabled', '');
-  }
-  if (roomNumbers.value === '2') {
-    roomCapacity.children[0].setAttribute('disabled', '');
-    roomCapacity.children[1].setAttribute('selected', '');
-    roomCapacity.children[3].setAttribute('disabled', '');
-  }
-  if (roomNumbers.value === '3') {
-    roomCapacity.children[0].setAttribute('selected', '');
-    roomCapacity.children[3].setAttribute('disabled', '');
-  }
+roomNumbers.addEventListener('change', () => {
   if (roomNumbers.value === '100') {
-    roomCapacity.children[0].setAttribute('disabled', '');
-    roomCapacity.children[1].setAttribute('disabled', '');
-    roomCapacity.children[2].setAttribute('disabled', '');
-    roomCapacity.children[3].setAttribute('selected', '');
+    for (let i = 0; i < roomCapacityOptions.length; i++) {
+      if (roomCapacityOptions[i].value === '0') {
+        roomCapacityOptions[i].disabled = false;
+        roomCapacityOptions[i].selected = true;
+      } else {
+        roomCapacityOptions[i].disabled = true;
+      }
+    }
+  } else {
+    for (let i = 0; i < roomCapacityOptions.length; i++) {
+      if (roomCapacityOptions[i].value <= roomNumbers.value && roomCapacityOptions[i].value !== '0') {
+        roomCapacityOptions[i].disabled = false;
+        roomCapacityOptions[i].selected = true;
+      } else {
+        roomCapacityOptions[i].disabled = true;
+      }
+    }
   }
 });
 
-timeIn.addEventListener('click', () => {
-  for (let i = 0; i < timeIn.children.length; i++) {
-    timeOut.children[i].removeAttribute('selected', '');
-  }
-  if (timeIn.value === '12:00') {
-    timeOut.children[0].setAttribute('selected', '');
-  }
-  if (timeIn.value === '13:00') {
-    timeOut.children[1].setAttribute('selected', '');
-  }
-  if (timeIn.value === '14:00') {
-    timeOut.children[2].setAttribute('selected', '');
-  }
+timeIn.addEventListener('change', (evt) => {
+  timeOut.value = evt.target.value;
 });
 
-timeOut.addEventListener('click', () => {
-  for (let i = 0; i < timeOut.children.length; i++) {
-    timeIn.children[i].removeAttribute('selected', '');
-  }
-  if (timeOut.value === '12:00') {
-    timeIn.children[0].setAttribute('selected', '');
-  }
-  if (timeOut.value === '13:00') {
-    timeIn.children[1].setAttribute('selected', '');
-  }
-  if (timeOut.value === '14:00') {
-    timeIn.children[2].setAttribute('selected', '');
-  }
+timeOut.addEventListener('change', (evt) => {
+  timeIn.value = evt.target.value;
 });
 
 const getSuccessForm = () => {
+  setResetAll();
   const successFormTemplate = document.querySelector('#success').content.querySelector('.success');
   const successForm = successFormTemplate.cloneNode(true);
   document.body.appendChild(successForm);
   successForm.onclick = () => document.body.removeChild(successForm);
   window.addEventListener('keydown', (evt) => {
-    if (evt.keyCode === 27) {
+    if (evt.keyCode === ESC_KEYCODE) {
       document.body.removeChild(successForm);
     }
   });
@@ -144,3 +126,5 @@ form.addEventListener('submit', (evt) => {
   const formData = new FormData(evt.target);
   sendData(getSuccessForm, getErrorForm, formData);
 });
+
+export {setPriceInput, roomCapacity, roomNumbers};

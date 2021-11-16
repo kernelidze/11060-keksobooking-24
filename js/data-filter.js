@@ -54,7 +54,7 @@ const getFiltration = ({offer}) => {
   const elevatorFilter = (offer.features && featureElevator.checked && offer.features.includes('elevator') || !featureElevator.checked);
   const conditionerFilter = (offer.features && featureConditioner.checked && offer.features.includes('conditioner') || !featureConditioner.checked);
   const houseFilter = (offer.type === houseType.value || houseType.value === 'any');
-  const roomsFilter = (offer.rooms >=  houseRooms.value || houseRooms.value === 'any');
+  const roomsFilter = (offer.rooms <=  houseRooms.value || houseRooms.value === 'any');
   const guestsFilter = (offer.guests <= houseGuests.value || houseGuests.value === 'any');
   const priceFilter = () => {
     if (housePrice.value === 'any') {
@@ -81,7 +81,7 @@ const getFiltration = ({offer}) => {
   return wifiFilter && dishwasherFilter && parkingFilter && washerFilter && elevatorFilter && conditionerFilter && houseFilter && priceFilter() && roomsFilter && guestsFilter;
 };
 
-const handlerFilters = (name) => {
+const filterHandler = (name) => {
   name.addEventListener('change', (evt) => {
     markerGroup.clearLayers();
     closePopup();
@@ -91,15 +91,15 @@ const handlerFilters = (name) => {
   });
 };
 
-handlerFilters(houseType);
-handlerFilters(housePrice);
-handlerFilters(houseRooms);
-handlerFilters(houseGuests);
-handlerFilters(featureWifi);
-handlerFilters(featureWasher);
-handlerFilters(featureParking);
-handlerFilters(featureDishwasher);
-handlerFilters(featureElevator);
-handlerFilters(featureConditioner);
+filterHandler(houseType);
+filterHandler(housePrice);
+filterHandler(houseRooms);
+filterHandler(houseGuests);
+filterHandler(featureWifi);
+filterHandler(featureWasher);
+filterHandler(featureParking);
+filterHandler(featureDishwasher);
+filterHandler(featureElevator);
+filterHandler(featureConditioner);
 
 export {getFiltration, compareFeatures, mapFiltersForm};

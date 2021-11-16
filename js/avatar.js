@@ -28,4 +28,6 @@ fileChooser.addEventListener('change', () => {
   }
 });
 
+export {avatarImg, preview};
+
 

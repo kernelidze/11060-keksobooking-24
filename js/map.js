@@ -1,13 +1,14 @@
 import {generateFragment} from './similar-elements.js';
 import {getData} from './data-server.js';
 import {getFiltration, compareFeatures, mapFiltersForm} from './data-filter.js';
+import {setPriceInput, roomCapacity, roomNumbers} from './form.js';
+import {avatarImg, preview} from './avatar.js';
 
 const form = document.querySelector('.ad-form');
 const resetButton = document.querySelector('.ad-form__reset');
 const formAddress = form.querySelector('input[name=address]');
 const formFieldsAll = document.querySelectorAll('input, textarea, select');
 const formInteractiveElements = Object.values(formFieldsAll);
-
 const MAP_SCALE = 12;
 const MAX_DATA_OFFERS = 10;
 const tokyoCenterLatLng =  {
@@ -109,6 +110,32 @@ const renderPins = () => {
   });
 };
 
+const setResetAll = () => {
+  form.reset();
+  closePopup();
+  mapFiltersForm.reset();
+  map.setView({
+    lat: tokyoCenterLatLng.lat,
+    lng: tokyoCenterLatLng.lng,
+  }, MAP_SCALE);
+  mainPinMarker.setLatLng({
+    lat: tokyoCenterLatLng.lat,
+    lng: tokyoCenterLatLng.lng,
+  });
+  formAddress.value = `${tokyoCenterLatLng.lat} ${tokyoCenterLatLng.lng}`;
+  setPriceInput();
+  roomCapacity.value = roomNumbers.value;
+  avatarImg.src = 'img/muffin-grey.svg';
+  if (preview.querySelector('img')) {
+    preview.removeChild(preview.querySelector('img'));
+  }
+};
+
+resetButton.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  setResetAll();
+});
+
 const onSucces = (data) => {
   originalData = data;
   renderPins();
@@ -116,24 +143,4 @@ const onSucces = (data) => {
 
 getData(onSucces);
 
-const resetDataHandler = () => {
-  resetButton.addEventListener('click', (evt) => {
-    evt.preventDefault();
-    form.reset();
-    closePopup();
-    mapFiltersForm.reset();
-    map.setView({
-      lat: tokyoCenterLatLng.lat,
-      lng: tokyoCenterLatLng.lng,
-    }, MAP_SCALE);
-    mainPinMarker.setLatLng({
-      lat: tokyoCenterLatLng.lat,
-      lng: tokyoCenterLatLng.lng,
-    });
-    formAddress.value = `${tokyoCenterLatLng.lat} ${tokyoCenterLatLng.lng}`;
-  });
-};
-
-resetDataHandler();
-
-export {closePopup, renderPins, markerGroup};
+export {closePopup, renderPins, markerGroup, setResetAll};
