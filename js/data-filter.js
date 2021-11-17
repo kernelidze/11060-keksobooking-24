@@ -54,8 +54,8 @@ const getFiltration = ({offer}) => {
   const elevatorFilter = (offer.features && featureElevator.checked && offer.features.includes('elevator') || !featureElevator.checked);
   const conditionerFilter = (offer.features && featureConditioner.checked && offer.features.includes('conditioner') || !featureConditioner.checked);
   const houseFilter = (offer.type === houseType.value || houseType.value === 'any');
-  const roomsFilter = (offer.rooms <=  houseRooms.value || houseRooms.value === 'any');
-  const guestsFilter = (offer.guests <= houseGuests.value || houseGuests.value === 'any');
+  const roomsFilter = (offer.rooms === +houseRooms.value || houseRooms.value === 'any');
+  const guestsFilter = (offer.guests === +houseGuests.value || houseGuests.value === 'any');
   const priceFilter = () => {
     if (housePrice.value === 'any') {
       return true;

@@ -25,6 +25,7 @@ formTitleInput.setAttribute('minlength', '30');
 formTitleInput.setAttribute('maxlength', '100');
 formPriceInput.setAttribute('required', '');
 formPriceInput.setAttribute('placeholder', `${minRentPrice[houseTypes.value]}`);
+formPriceInput.setAttribute('min', `${minRentPrice[houseTypes.value]}`);
 roomCapacity.value = roomNumbers.value;
 
 formTitleInput.addEventListener('input', () => {
@@ -42,49 +43,51 @@ formTitleInput.addEventListener('input', () => {
 });
 
 const setPriceInput = () => {
-  formPriceInput.value = `${minRentPrice[houseTypes.value]}`;
-  formPriceInput.setAttribute('min', `${minRentPrice[houseTypes.value]}`);
+  formPriceInput.setAttribute('placeholder', `${minRentPrice[houseTypes.value]}`);
 };
-setPriceInput();
 
 houseTypes.addEventListener('change', () => {
   formPriceInput.setAttribute('placeholder', `${minRentPrice[houseTypes.value]}`);
   formPriceInput.setAttribute('min', `${minRentPrice[houseTypes.value]}`);
-  formPriceInput.value = `${minRentPrice[houseTypes.value]}`;
 });
 
 formPriceInput.addEventListener('input', () => {
   const minPriceValue = minRentPrice[houseTypes.value];
   const MAX_PRICE_VALUE = 1000000;
   if (formPriceInput.value < minPriceValue) {
-    formPriceInput.setCustomValidity(`Минимальная цена должна быть на ${minPriceValue - formPriceInput.value} руб. выше`);
+    formPriceInput.setCustomValidity(`Минимальная цена должна быть ${minPriceValue} руб.`);
   } else if (formPriceInput.value > MAX_PRICE_VALUE) {
-    formPriceInput.setCustomValidity(`Максимальная цена должна быть на ${MAX_PRICE_VALUE - formPriceInput.value} руб. ниже`);
+    formPriceInput.setCustomValidity(`Максимальная цена должна быть ${MAX_PRICE_VALUE} руб.`);
   } else {
     formPriceInput.setCustomValidity('');
   }
   formPriceInput.reportValidity();
 });
 
-roomNumbers.addEventListener('change', () => {
-  if (roomNumbers.value === '100') {
-    for (let i = 0; i < roomCapacityOptions.length; i++) {
-      if (roomCapacityOptions[i].value === '0') {
-        roomCapacityOptions[i].disabled = false;
-        roomCapacityOptions[i].selected = true;
-      } else {
-        roomCapacityOptions[i].disabled = true;
-      }
-    }
-  } else {
-    for (let i = 0; i < roomCapacityOptions.length; i++) {
-      if (roomCapacityOptions[i].value <= roomNumbers.value && roomCapacityOptions[i].value !== '0') {
-        roomCapacityOptions[i].disabled = false;
-        roomCapacityOptions[i].selected = true;
-      } else {
-        roomCapacityOptions[i].disabled = true;
-      }
-    }
+roomCapacityOptions[0].disabled = true;
+roomCapacityOptions[1].disabled = true;
+roomCapacityOptions[3].disabled = true;
+
+roomNumbers.addEventListener('click', (evt) => {
+  roomCapacityOptions.forEach((element) => element.disabled = true);
+  if (evt.target.value === '1') {
+    roomCapacityOptions[2].disabled = false;
+    roomCapacity.value = '1';
+  }
+  if (evt.target.value === '2') {
+    roomCapacityOptions[1].disabled = false;
+    roomCapacityOptions[2].disabled = false;
+    roomCapacity.value = '1';
+  }
+  if (evt.target.value === '3') {
+    roomCapacityOptions[0].disabled = false;
+    roomCapacityOptions[1].disabled = false;
+    roomCapacityOptions[2].disabled = false;
+    roomCapacity.value = '1';
+  }
+  if (evt.target.value === '100') {
+    roomCapacityOptions[3].disabled = false;
+    roomCapacity.value = '0';
   }
 });
 

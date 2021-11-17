@@ -114,6 +114,8 @@ const setResetAll = () => {
   form.reset();
   closePopup();
   mapFiltersForm.reset();
+  markerGroup.clearLayers();
+  renderPins();
   map.setView({
     lat: tokyoCenterLatLng.lat,
     lng: tokyoCenterLatLng.lng,
