@@ -46,12 +46,7 @@ const setPriceInput = () => {
   formPriceInput.setAttribute('placeholder', `${minRentPrice[houseTypes.value]}`);
 };
 
-houseTypes.addEventListener('change', () => {
-  formPriceInput.setAttribute('placeholder', `${minRentPrice[houseTypes.value]}`);
-  formPriceInput.setAttribute('min', `${minRentPrice[houseTypes.value]}`);
-});
-
-formPriceInput.addEventListener('input', () => {
+const priceValidation = () => {
   const minPriceValue = minRentPrice[houseTypes.value];
   const MAX_PRICE_VALUE = 1000000;
   if (formPriceInput.value < minPriceValue) {
@@ -61,35 +56,45 @@ formPriceInput.addEventListener('input', () => {
   } else {
     formPriceInput.setCustomValidity('');
   }
+};
+
+houseTypes.addEventListener('change', () => {
+  formPriceInput.setAttribute('placeholder', `${minRentPrice[houseTypes.value]}`);
+  formPriceInput.setAttribute('min', `${minRentPrice[houseTypes.value]}`);
+  priceValidation();
+});
+
+formPriceInput.addEventListener('input', () => {
+  priceValidation();
   formPriceInput.reportValidity();
 });
 
-roomCapacityOptions[0].disabled = true;
-roomCapacityOptions[1].disabled = true;
-roomCapacityOptions[3].disabled = true;
-
-roomNumbers.addEventListener('click', (evt) => {
+const roomsValidate = () => {
   roomCapacityOptions.forEach((element) => element.disabled = true);
-  if (evt.target.value === '1') {
+  if (roomNumbers.value === '1') {
     roomCapacityOptions[2].disabled = false;
     roomCapacity.value = '1';
   }
-  if (evt.target.value === '2') {
+  if (roomNumbers.value === '2') {
     roomCapacityOptions[1].disabled = false;
     roomCapacityOptions[2].disabled = false;
     roomCapacity.value = '1';
   }
-  if (evt.target.value === '3') {
+  if (roomNumbers.value === '3') {
     roomCapacityOptions[0].disabled = false;
     roomCapacityOptions[1].disabled = false;
     roomCapacityOptions[2].disabled = false;
     roomCapacity.value = '1';
   }
-  if (evt.target.value === '100') {
+  if (roomNumbers.value === '100') {
     roomCapacityOptions[3].disabled = false;
     roomCapacity.value = '0';
   }
-});
+};
+
+roomsValidate();
+
+roomNumbers.addEventListener('click', roomsValidate);
 
 timeIn.addEventListener('change', (evt) => {
   timeOut.value = evt.target.value;
