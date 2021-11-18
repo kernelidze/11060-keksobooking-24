@@ -2,6 +2,21 @@ import {closePopup, renderPins, markerGroup} from './map.js';
 import {debounce} from './util.js';
 
 const DEBOUNCE_DELAY = 500;
+const ANY_VALUE = 'any';
+const filterPriceOptions = {
+  low: {
+    min: 0,
+    max: 10000,
+  },
+  middle: {
+    min: 10000,
+    max: 50000,
+  },
+  high: {
+    min: 50000,
+    max: Infinity,
+  },
+};
 const mapFiltersForm = document.querySelector('.map__filters');
 const houseType = mapFiltersForm.querySelector('#housing-type');
 const housePrice = mapFiltersForm.querySelector('#housing-price');
@@ -53,32 +68,11 @@ const getFiltration = ({offer}) => {
   const washerFilter = (offer.features && featureWasher.checked && offer.features.includes('washer') || !featureWasher.checked);
   const elevatorFilter = (offer.features && featureElevator.checked && offer.features.includes('elevator') || !featureElevator.checked);
   const conditionerFilter = (offer.features && featureConditioner.checked && offer.features.includes('conditioner') || !featureConditioner.checked);
-  const houseFilter = (offer.type === houseType.value || houseType.value === 'any');
-  const roomsFilter = (offer.rooms === +houseRooms.value || houseRooms.value === 'any');
-  const guestsFilter = (offer.guests === +houseGuests.value || houseGuests.value === 'any');
-  const priceFilter = () => {
-    if (housePrice.value === 'any') {
-      return true;
-    }
-    if (housePrice.value === 'middle') {
-      if (offer.price > '10000' && offer.price < '50000') {
-        return true;
-      }
-    }
-    if (housePrice.value === 'low') {
-      if (offer.price < '10000') {
-        return true;
-      }
-    }
-    if (housePrice.value === 'high') {
-      if (offer.price >= '50000') {
-        return true;
-      }
-    } else {
-      return false;
-    }
-  };
-  return wifiFilter && dishwasherFilter && parkingFilter && washerFilter && elevatorFilter && conditionerFilter && houseFilter && priceFilter() && roomsFilter && guestsFilter;
+  const houseFilter = (offer.type === houseType.value || houseType.value === ANY_VALUE);
+  const roomsFilter = (offer.rooms === +houseRooms.value || houseRooms.value === ANY_VALUE);
+  const guestsFilter = (offer.guests === +houseGuests.value || houseGuests.value === ANY_VALUE);
+  const priceFilter = (housePrice.value === ANY_VALUE || offer.price >= filterPriceOptions[housePrice.value].min && offer.price < filterPriceOptions[housePrice.value].max);
+  return wifiFilter && dishwasherFilter && parkingFilter && washerFilter && elevatorFilter && conditionerFilter && houseFilter && priceFilter && roomsFilter && guestsFilter;
 };
 
 const filterHandler = (name) => {

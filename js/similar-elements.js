@@ -5,6 +5,8 @@ const switchHouseTypes = {
   palace: 'Дворец',
   hotel: 'Отель',
 };
+const PHOTO_WIDTH = 45;
+const PHOTO_HEIGHT = 40;
 
 const cardTemplate = document.querySelector('#card').content.querySelector('.popup');
 const fragment = document.createDocumentFragment();
@@ -36,8 +38,8 @@ const generateFragment = (item) => {
     arrayPhotos.forEach((photo) => {
       const photoElement = document.createElement('img');
       photoElement.src = photo;
-      photoElement.width = 45;
-      photoElement.height = 40;
+      photoElement.width = PHOTO_WIDTH;
+      photoElement.height = PHOTO_HEIGHT;
       photoElement.alt = 'Фотография жилья';
       photoElement.classList.add('popup__photo');
       element.querySelector('.popup__photos').appendChild(photoElement);

@@ -1,4 +1,5 @@
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+const IMAGE_WIDTH = 70;
 
 const fileChooser = document.querySelector('.ad-form__upload input[type=file]');
 const preview = document.querySelector('.ad-form__photo');
@@ -23,7 +24,7 @@ fileChooser.addEventListener('change', () => {
   if (matches) {
     const image = new Image();
     image.src = URL.createObjectURL(file);
-    image.width = 70;
+    image.width = IMAGE_WIDTH;
     preview.appendChild(image);
   }
 });

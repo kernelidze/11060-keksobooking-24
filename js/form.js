@@ -1,15 +1,6 @@
 import {sendData} from './data-server.js';
 import {setResetAll} from './map.js';
 
-const form = document.querySelector('.ad-form');
-const formTitleInput = form.querySelector('input[name=title]');
-const formPriceInput = form.querySelector('input[name=price]');
-const houseTypes = form.querySelector('#type');
-const roomNumbers = form.querySelector('select[name=rooms]');
-const roomCapacity = form.querySelector('select[name=capacity]');
-const roomCapacityOptions = form.querySelector('select[name=capacity]').querySelectorAll('option');
-const timeIn = form.querySelector('select[name=timein]');
-const timeOut = form.querySelector('select[name=timeout]');
 const ESC_KEYCODE = 27;
 const minRentPrice = {
   bungalow: 0,
@@ -18,6 +9,23 @@ const minRentPrice = {
   house: 5000,
   palace: 10000,
 };
+const MIN_NAME_LENGTH = 30;
+const MAX_NAME_LENGTH = 100;
+const MAX_PRICE_VALUE = 1000000;
+const RoomsSpaces = {
+  1: [1],
+  2: [1, 2],
+  3: [1, 2, 3],
+  100: [0],
+};
+const form = document.querySelector('.ad-form');
+const formTitleInput = form.querySelector('input[name=title]');
+const formPriceInput = form.querySelector('input[name=price]');
+const houseTypes = form.querySelector('#type');
+const roomNumbers = form.querySelector('select[name=rooms]');
+const roomCapacity = form.querySelector('select[name=capacity]');
+const timeIn = form.querySelector('select[name=timein]');
+const timeOut = form.querySelector('select[name=timeout]');
 
 form.action = 'https://24.javascript.pages.academy/keksobooking';
 formTitleInput.setAttribute('required', '');
@@ -30,8 +38,6 @@ roomCapacity.value = roomNumbers.value;
 
 formTitleInput.addEventListener('input', () => {
   const valueLength = formTitleInput.value.length;
-  const MIN_NAME_LENGTH = 30;
-  const MAX_NAME_LENGTH = 100;
   if (valueLength < MIN_NAME_LENGTH) {
     formTitleInput.setCustomValidity(`Ещё ${MIN_NAME_LENGTH - valueLength} симв.`);
   } else if (valueLength > MAX_NAME_LENGTH) {
@@ -46,9 +52,8 @@ const setPriceInput = () => {
   formPriceInput.setAttribute('placeholder', `${minRentPrice[houseTypes.value]}`);
 };
 
-const priceValidation = () => {
+const getPriceValidate = () => {
   const minPriceValue = minRentPrice[houseTypes.value];
-  const MAX_PRICE_VALUE = 1000000;
   if (formPriceInput.value < minPriceValue) {
     formPriceInput.setCustomValidity(`Минимальная цена должна быть ${minPriceValue} руб.`);
   } else if (formPriceInput.value > MAX_PRICE_VALUE) {
@@ -61,40 +66,29 @@ const priceValidation = () => {
 houseTypes.addEventListener('change', () => {
   formPriceInput.setAttribute('placeholder', `${minRentPrice[houseTypes.value]}`);
   formPriceInput.setAttribute('min', `${minRentPrice[houseTypes.value]}`);
-  priceValidation();
+  getPriceValidate();
 });
 
 formPriceInput.addEventListener('input', () => {
-  priceValidation();
+  getPriceValidate();
   formPriceInput.reportValidity();
 });
 
-const roomsValidate = () => {
-  roomCapacityOptions.forEach((element) => element.disabled = true);
-  if (roomNumbers.value === '1') {
-    roomCapacityOptions[2].disabled = false;
-    roomCapacity.value = '1';
+const getRoomsValidate = () => {
+  const roomNumber = +roomNumbers.value;
+  const roomGuest = +roomCapacity.value;
+  if (!RoomsSpaces[roomNumber].includes(roomGuest)) {
+    roomCapacity.setCustomValidity(`Нельзя разместить ${roomGuest} гостей в ${roomNumber} комн.`);
+  } else {
+    roomCapacity.setCustomValidity('');
   }
-  if (roomNumbers.value === '2') {
-    roomCapacityOptions[1].disabled = false;
-    roomCapacityOptions[2].disabled = false;
-    roomCapacity.value = '1';
-  }
-  if (roomNumbers.value === '3') {
-    roomCapacityOptions[0].disabled = false;
-    roomCapacityOptions[1].disabled = false;
-    roomCapacityOptions[2].disabled = false;
-    roomCapacity.value = '1';
-  }
-  if (roomNumbers.value === '100') {
-    roomCapacityOptions[3].disabled = false;
-    roomCapacity.value = '0';
-  }
+  roomCapacity.reportValidity();
 };
 
-roomsValidate();
+getRoomsValidate();
 
-roomNumbers.addEventListener('click', roomsValidate);
+roomNumbers.addEventListener('change', getRoomsValidate);
+roomCapacity.addEventListener('change', getRoomsValidate);
 
 timeIn.addEventListener('change', (evt) => {
   timeOut.value = evt.target.value;
@@ -109,7 +103,9 @@ const getSuccessForm = () => {
   const successFormTemplate = document.querySelector('#success').content.querySelector('.success');
   const successForm = successFormTemplate.cloneNode(true);
   document.body.appendChild(successForm);
-  successForm.onclick = () => document.body.removeChild(successForm);
+  successForm.addEventListener('click', () => {
+    document.body.removeChild(successForm);
+  });
   window.addEventListener('keydown', (evt) => {
     if (evt.keyCode === ESC_KEYCODE) {
       document.body.removeChild(successForm);
@@ -121,7 +117,9 @@ const getErrorForm = () => {
   const errorFormTemplate = document.querySelector('#error').content.querySelector('.error');
   const errorForm = errorFormTemplate.cloneNode(true);
   document.body.appendChild(errorForm);
-  errorForm.onclick = () => document.body.removeChild(errorForm);
+  errorForm.addEventListener('click', () => {
+    document.body.removeChild(errorForm);
+  });
   errorForm.addEventListener('keydown', (evt) => {
     if (evt.keyCode === ESC_KEYCODE) {
       document.body.removeChild(errorForm);
