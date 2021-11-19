@@ -6,12 +6,12 @@ import {avatarImg, preview} from './avatar.js';
 
 const MAP_SCALE = 12;
 const MAX_DATA_OFFERS = 10;
-const tokyoCenterLatLng =  {
+const TokyoCenterLatLng =  {
   lat: 35.68950,
   lng: 139.69171,
 };
-const mainPinSizes = [52, 52]; // это перечисления или массив?
-const mainPinAnchors = [26, 52]; // также вопрос выше
+const mainPinSizes = [52, 52];
+const mainPinAnchors = [26, 52];
 const pinSizes = [40, 40];
 const pinAnchors = [20, 40];
 const form = document.querySelector('.ad-form');
@@ -20,7 +20,7 @@ const formAddress = form.querySelector('input[name=address]');
 const formFieldsAll = document.querySelectorAll('input, textarea, select');
 const formInteractiveElements = Object.values(formFieldsAll);
 
-formAddress.value = `${tokyoCenterLatLng.lat} ${tokyoCenterLatLng.lng}`;
+formAddress.value = `${TokyoCenterLatLng.lat} ${TokyoCenterLatLng.lng}`;
 
 const setFormUnactive = () => {
   form.classList.add('ad-form--disabled');
@@ -45,8 +45,8 @@ const map = L.map('map-canvas')
     setFormUnactive();
   })
   .setView({
-    lat: tokyoCenterLatLng.lat,
-    lng: tokyoCenterLatLng.lng,
+    lat: TokyoCenterLatLng.lat,
+    lng: TokyoCenterLatLng.lng,
   }, MAP_SCALE);
 
 L.tileLayer(
@@ -64,8 +64,8 @@ const mainPinIcon = L.icon({
 
 const mainPinMarker = L.marker(
   {
-    lat: tokyoCenterLatLng.lat,
-    lng: tokyoCenterLatLng.lng,
+    lat: TokyoCenterLatLng.lat,
+    lng: TokyoCenterLatLng.lng,
   },
   {
     draggable: true,
@@ -121,14 +121,14 @@ const setResetAll = () => {
   markerGroup.clearLayers();
   renderPins();
   map.setView({
-    lat: tokyoCenterLatLng.lat,
-    lng: tokyoCenterLatLng.lng,
+    lat: TokyoCenterLatLng.lat,
+    lng: TokyoCenterLatLng.lng,
   }, MAP_SCALE);
   mainPinMarker.setLatLng({
-    lat: tokyoCenterLatLng.lat,
-    lng: tokyoCenterLatLng.lng,
+    lat: TokyoCenterLatLng.lat,
+    lng: TokyoCenterLatLng.lng,
   });
-  formAddress.value = `${tokyoCenterLatLng.lat} ${tokyoCenterLatLng.lng}`;
+  formAddress.value = `${TokyoCenterLatLng.lat} ${TokyoCenterLatLng.lng}`;
   setPriceInput();
   roomCapacity.value = roomNumbers.value;
   avatarImg.src = 'img/muffin-grey.svg';

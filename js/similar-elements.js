@@ -1,4 +1,4 @@
-const switchHouseTypes = {
+const SwitchHouseTypes = {
   flat: 'Квартира',
   bungalow: 'Бунгало',
   house: 'Дом',
@@ -20,7 +20,7 @@ const generateFragment = (item) => {
   element.querySelector('.popup__title').textContent = item.offer.title;
   element.querySelector('.popup__text--address').textContent = item.offer.address;
   element.querySelector('.popup__text--price').textContent =`${item.offer.price} ₽/ночь`;
-  element.querySelector('.popup__type').textContent = switchHouseTypes[item.offer.type];
+  element.querySelector('.popup__type').textContent = SwitchHouseTypes[item.offer.type];
   element.querySelector('.popup__text--capacity').textContent = `${item.offer.rooms} комнаты для ${item.offer.guests} гостей`;
   element.querySelector('.popup__text--time').textContent = `Заезд после ${item.offer.checkin}, выезд до ${item.offer.checkout}`;
   featuresContainer.innerHTML = '';

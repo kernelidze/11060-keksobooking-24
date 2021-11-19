@@ -2,7 +2,7 @@ import {sendData} from './data-server.js';
 import {setResetAll} from './map.js';
 
 const ESC_KEYCODE = 27;
-const minRentPrice = {
+const MinRentPrice = {
   bungalow: 0,
   flat: 1000,
   hotel: 3000,
@@ -32,8 +32,8 @@ formTitleInput.setAttribute('required', '');
 formTitleInput.setAttribute('minlength', '30');
 formTitleInput.setAttribute('maxlength', '100');
 formPriceInput.setAttribute('required', '');
-formPriceInput.setAttribute('placeholder', `${minRentPrice[houseTypes.value]}`);
-formPriceInput.setAttribute('min', `${minRentPrice[houseTypes.value]}`);
+formPriceInput.setAttribute('placeholder', `${MinRentPrice[houseTypes.value]}`);
+formPriceInput.setAttribute('min', `${MinRentPrice[houseTypes.value]}`);
 roomCapacity.value = roomNumbers.value;
 
 formTitleInput.addEventListener('input', () => {
@@ -49,11 +49,11 @@ formTitleInput.addEventListener('input', () => {
 });
 
 const setPriceInput = () => {
-  formPriceInput.setAttribute('placeholder', `${minRentPrice[houseTypes.value]}`);
+  formPriceInput.setAttribute('placeholder', `${MinRentPrice[houseTypes.value]}`);
 };
 
 const getPriceValidate = () => {
-  const minPriceValue = minRentPrice[houseTypes.value];
+  const minPriceValue = MinRentPrice[houseTypes.value];
   if (formPriceInput.value < minPriceValue) {
     formPriceInput.setCustomValidity(`Минимальная цена должна быть ${minPriceValue} руб.`);
   } else if (formPriceInput.value > MAX_PRICE_VALUE) {
@@ -64,8 +64,8 @@ const getPriceValidate = () => {
 };
 
 houseTypes.addEventListener('change', () => {
-  formPriceInput.setAttribute('placeholder', `${minRentPrice[houseTypes.value]}`);
-  formPriceInput.setAttribute('min', `${minRentPrice[houseTypes.value]}`);
+  formPriceInput.setAttribute('placeholder', `${MinRentPrice[houseTypes.value]}`);
+  formPriceInput.setAttribute('min', `${MinRentPrice[houseTypes.value]}`);
   getPriceValidate();
 });
 

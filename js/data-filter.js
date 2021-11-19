@@ -3,7 +3,7 @@ import {debounce} from './util.js';
 
 const DEBOUNCE_DELAY = 500;
 const ANY_VALUE = 'any';
-const filterPriceOptions = {
+const FilterPriceOptions = {
   low: {
     min: 0,
     max: 10000,
@@ -71,7 +71,7 @@ const getFiltration = ({offer}) => {
   const houseFilter = (offer.type === houseType.value || houseType.value === ANY_VALUE);
   const roomsFilter = (offer.rooms === +houseRooms.value || houseRooms.value === ANY_VALUE);
   const guestsFilter = (offer.guests === +houseGuests.value || houseGuests.value === ANY_VALUE);
-  const priceFilter = (housePrice.value === ANY_VALUE || offer.price >= filterPriceOptions[housePrice.value].min && offer.price < filterPriceOptions[housePrice.value].max);
+  const priceFilter = (housePrice.value === ANY_VALUE || offer.price >= FilterPriceOptions[housePrice.value].min && offer.price < FilterPriceOptions[housePrice.value].max);
   return wifiFilter && dishwasherFilter && parkingFilter && washerFilter && elevatorFilter && conditionerFilter && houseFilter && priceFilter && roomsFilter && guestsFilter;
 };
 
