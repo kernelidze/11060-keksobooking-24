@@ -14,6 +14,7 @@ const mainPinSizes = [52, 52];
 const mainPinAnchors = [26, 52];
 const pinSizes = [40, 40];
 const pinAnchors = [20, 40];
+
 const form = document.querySelector('.ad-form');
 const resetButton = document.querySelector('.ad-form__reset');
 const formAddress = form.querySelector('input[name=address]');

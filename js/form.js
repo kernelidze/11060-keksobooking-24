@@ -1,7 +1,7 @@
 import {sendData} from './data-server.js';
 import {setResetAll} from './map.js';
+import {isEscPressed} from './util.js';
 
-const ESC_KEYCODE = 27;
 const MinRentPrice = {
   bungalow: 0,
   flat: 1000,
@@ -18,6 +18,7 @@ const RoomsSpaces = {
   3: [1, 2, 3],
   100: [0],
 };
+
 const form = document.querySelector('.ad-form');
 const formTitleInput = form.querySelector('input[name=title]');
 const formPriceInput = form.querySelector('input[name=price]');
@@ -26,6 +27,10 @@ const roomNumbers = form.querySelector('select[name=rooms]');
 const roomCapacity = form.querySelector('select[name=capacity]');
 const timeIn = form.querySelector('select[name=timein]');
 const timeOut = form.querySelector('select[name=timeout]');
+const successFormTemplate = document.querySelector('#success').content.querySelector('.success');
+const successForm = successFormTemplate.cloneNode(true);
+const errorFormTemplate = document.querySelector('#error').content.querySelector('.error');
+const errorForm = errorFormTemplate.cloneNode(true);
 
 form.action = 'https://24.javascript.pages.academy/keksobooking';
 formTitleInput.setAttribute('required', '');
@@ -74,7 +79,7 @@ formPriceInput.addEventListener('input', () => {
   formPriceInput.reportValidity();
 });
 
-const getRoomsValidate = () => {
+const onRoomsValidateChange = () => {
   const roomNumber = +roomNumbers.value;
   const roomGuest = +roomCapacity.value;
   if (!RoomsSpaces[roomNumber].includes(roomGuest)) {
@@ -85,10 +90,10 @@ const getRoomsValidate = () => {
   roomCapacity.reportValidity();
 };
 
-getRoomsValidate();
+onRoomsValidateChange();
 
-roomNumbers.addEventListener('change', getRoomsValidate);
-roomCapacity.addEventListener('change', getRoomsValidate);
+roomNumbers.addEventListener('change', onRoomsValidateChange);
+roomCapacity.addEventListener('change', onRoomsValidateChange);
 
 timeIn.addEventListener('change', (evt) => {
   timeOut.value = evt.target.value;
@@ -98,33 +103,42 @@ timeOut.addEventListener('change', (evt) => {
   timeIn.value = evt.target.value;
 });
 
-const getSuccessForm = () => {
-  setResetAll();
-  const successFormTemplate = document.querySelector('#success').content.querySelector('.success');
-  const successForm = successFormTemplate.cloneNode(true);
-  document.body.appendChild(successForm);
-  successForm.addEventListener('click', () => {
+const onPopupEscSuccessCloseKeydown = (evt) => {
+  if (isEscPressed(evt)) {
     document.body.removeChild(successForm);
-  });
-  window.addEventListener('keydown', (evt) => {
-    if (evt.keyCode === ESC_KEYCODE) {
-      document.body.removeChild(successForm);
-    }
-  });
+    window.removeEventListener('keydown', onPopupEscSuccessCloseKeydown);
+  }
 };
 
-const getErrorForm = () => {
-  const errorFormTemplate = document.querySelector('#error').content.querySelector('.error');
-  const errorForm = errorFormTemplate.cloneNode(true);
-  document.body.appendChild(errorForm);
-  errorForm.addEventListener('click', () => {
+const onPopupSuccessCloseClick = () => {
+  document.body.removeChild(successForm);
+  window.removeEventListener('keydown', onPopupEscSuccessCloseKeydown);
+};
+
+const onPopupEscErrorCloseKeydown = (evt) => {
+  if (isEscPressed(evt)) {
     document.body.removeChild(errorForm);
-  });
-  errorForm.addEventListener('keydown', (evt) => {
-    if (evt.keyCode === ESC_KEYCODE) {
-      document.body.removeChild(errorForm);
-    }
-  });
+    window.removeEventListener('keydown', onPopupEscErrorCloseKeydown);
+  }
+};
+
+const onPopupErrorCloseClick = () => {
+  document.body.removeChild(errorForm);
+  window.removeEventListener('keydown', onPopupEscErrorCloseKeydown);
+};
+
+const getSuccessForm = () => {
+  setResetAll();
+  document.body.appendChild(successForm);
+  window.addEventListener('keydown', onPopupEscSuccessCloseKeydown);
+  successForm.addEventListener('click', onPopupSuccessCloseClick);
+};
+
+
+const getErrorForm = () => {
+  document.body.appendChild(errorForm);
+  window.addEventListener('keydown', onPopupEscErrorCloseKeydown);
+  errorForm.addEventListener('click', onPopupErrorCloseClick);
 };
 
 form.addEventListener('submit', (evt) => {

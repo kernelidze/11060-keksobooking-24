@@ -17,6 +17,7 @@ const FilterPriceOptions = {
     max: Infinity,
   },
 };
+
 const mapFiltersForm = document.querySelector('.map__filters');
 const houseType = mapFiltersForm.querySelector('#housing-type');
 const housePrice = mapFiltersForm.querySelector('#housing-price');

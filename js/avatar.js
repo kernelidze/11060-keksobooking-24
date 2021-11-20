@@ -9,7 +9,6 @@ const avatarImg = document.querySelector('.ad-form-header__preview img');
 avatarChooser.addEventListener('change', () => {
   const file = avatarChooser.files[0];
   const fileName = file.name.toLowerCase();
-
   const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
   if (matches) {
     avatarImg.src =  URL.createObjectURL(file);
@@ -19,7 +18,6 @@ avatarChooser.addEventListener('change', () => {
 fileChooser.addEventListener('change', () => {
   const file = fileChooser.files[0];
   const fileName = file.name.toLowerCase();
-
   const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
   if (matches) {
     const image = new Image();
